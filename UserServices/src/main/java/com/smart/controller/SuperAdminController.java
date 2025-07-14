@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,10 +42,24 @@ public class SuperAdminController {
 
 	@Autowired
 	private ModuleAccessRepository moduleAccessRepository;
+	
+	
+	@GetMapping("/checkDuplicateEmail/{email}")
+	public boolean checkDuplicate(@PathVariable String email) {
+		boolean isUserExist = true;
+
+		User user = userRepository.getUserByUserName(email);
+
+		if (user != null) {
+			isUserExist = false;
+		}
+
+		return isUserExist;
+	}
 
 	@PostMapping("/createCompany")
-	public CompanyDto createCompanyList(@RequestBody CompanyDto companyDto) {
-
+	public ResponseEntity<?> createCompanyList(@RequestBody CompanyDto companyDto) {
+       try {
 		User user = new User();
 
 		user.setName(companyDto.getCompanyName());
@@ -71,22 +87,32 @@ public class SuperAdminController {
 
 		moduleAccessRepository.save(module);
 
-		return companyDto;
-
+		return ResponseEntity.ok(companyDto);
+       }catch(Exception e) {
+    	   
+    	   e.printStackTrace();
+    	   
+    	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+       }
 	}
 
-	@GetMapping("/getCompanyList/{page}/{size}")
-	public ResponseEntity<?> getCompanyList(@PathVariable int page, @PathVariable int size,
-			@RequestParam(defaultValue = "") String companyName) {
-
-		Pageable pageable = PageRequest.of(page, size, Sort.by("companyId").descending());
-
-		Page<Company> companyPage = companyRepository.findByCompnayNameContainingIgnoreCase(companyName, pageable);
-
-		List<Company> companyList = companyPage.getContent();
-
-		return ResponseEntity.ok(companyList);
-
-	}
+		@GetMapping("/getCompanyList/{page}/{size}")
+		public ResponseEntity<?> getCompanyList(@PathVariable int page, @PathVariable int size,
+				@RequestParam(defaultValue = "") String companyName) {
+	
+			try {
+			
+			Pageable pageable = PageRequest.of(page, size, Sort.by("companyId").descending());
+	
+			Page<Company> companyPage = companyRepository.findByCompnayNameContainingIgnoreCase(companyName, pageable);
+	
+			List<Company> companyList = companyPage.getContent();
+	
+			return ResponseEntity.ok(companyList);
+			}catch(Exception e){
+				e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			}
+		}
 
 }

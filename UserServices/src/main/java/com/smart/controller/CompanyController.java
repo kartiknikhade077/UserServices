@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smart.dto.EmployeeDto;
@@ -90,12 +95,27 @@ public class CompanyController {
 					.body("Error creating employee: " + ex.getMessage());
 		}
 	}
+	
+	
+	@GetMapping("/checkDuplicateEmail/{email}")
+	public boolean checkDuplicate(@PathVariable String email) {
+		boolean isUserExist = true;
 
-	@GetMapping("/getEmployeeList")
-	public ResponseEntity<?> getEmployeeList() {
+		User user = userRepository.getUserByUserName(email);
+
+		if (user != null) {
+			isUserExist = false;
+		}
+
+		return isUserExist;
+	}
+
+	@GetMapping("/getEmployeeList/{page}/{size}")
+	public ResponseEntity<?> getEmployeeList(@PathVariable int page ,@PathVariable int size, @RequestParam(defaultValue = "") String name) {
 		try {
-
-			List<Employee> employeeList = employRepository.findByCompanyId(company.getCompanyId());
+			 Pageable pageable = PageRequest.of(page, size, Sort.by("employeeId").descending());
+		        Page<Employee> employeePage = employRepository.findByCompanyIdAndNameContainingIgnoreCase(company.getCompanyId(), name, pageable);
+		        List<Employee> employeeList = employeePage.getContent();
 
 			return ResponseEntity.ok(employeeList);
 		} catch (Exception e) {
