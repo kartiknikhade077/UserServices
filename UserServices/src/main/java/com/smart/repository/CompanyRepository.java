@@ -20,7 +20,7 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
 	@Query(value = """
 		    SELECT
-		        c.compnay_name AS companyName,
+		        c.company_name AS companyName,
 		        c.company_id AS companyId,
 		        c.company_email AS email,
 		        c.company_description AS desciption,
@@ -34,6 +34,8 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
 		CompanyDto findCompanyDtoByEmail(@Param("email") String email);
 	
 	
-	 Page<Company> findByCompnayNameContainingIgnoreCase(String companyName, Pageable pageable);
+	 Page<Company> findByCompanyNameContainingIgnoreCase(String companyName, Pageable pageable);
+	 
+	 Company findByCompanyId(int companyId);
 
 }

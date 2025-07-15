@@ -108,7 +108,7 @@ public class HomeController {
             
             if(user.getRole().equals("ROLE_COMPANY")) {
             	CompanyDto company=companyRepository.findCompanyDtoByEmail(user.getEmail());
-            	uDto = new UserDto(user.getId(),company.getCompanyId(), user.getName(), user.getEmail(), user.getRole(),user.isEnabled(), token,false,false,false);
+            	uDto = new UserDto(user.getId(),company.getCompanyId(), user.getName(), user.getEmail(), user.getRole(),user.isEnabled(), token,company.isLeadAccess(),company.isTempalteAccess(),company.isEmailAccess());
             }else if(user.getRole().equals("ROLE_EMP")){
             	EmployeeDto emp = employeeRepository.findByEmailWithAccess(user.getEmail());
             	uDto = new UserDto(user.getId(), user.getName(), user.getEmail(), user.getRole(),user.isEnabled(),emp.getCompanyId(), token,emp.isLeadAccess(),emp.isTemplateAccess(),emp.isEmailAccess());

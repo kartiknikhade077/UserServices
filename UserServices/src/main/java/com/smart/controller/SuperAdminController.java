@@ -1,6 +1,8 @@
 package com.smart.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,7 +74,7 @@ public class SuperAdminController {
 		userRepository.save(user);
 
 		Company company = new Company();
-		company.setCompnayName(companyDto.getCompanyName());
+		company.setCompanyName(companyDto.getCompanyName());
 		company.setCompanyEmail(companyDto.getEmail());
 		company.setCompanyDescription(companyDto.getDesciption());
 		company.setUserId(user.getId());
@@ -104,7 +107,7 @@ public class SuperAdminController {
 			
 			Pageable pageable = PageRequest.of(page, size, Sort.by("companyId").descending());
 	
-			Page<Company> companyPage = companyRepository.findByCompnayNameContainingIgnoreCase(companyName, pageable);
+			Page<Company> companyPage = companyRepository.findByCompanyNameContainingIgnoreCase(companyName, pageable);
 	
 			List<Company> companyList = companyPage.getContent();
 	
@@ -114,5 +117,82 @@ public class SuperAdminController {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 			}
 		}
+		
+		
+	  @GetMapping("/getCompanyInfo/{companyId}")	
+	  public ResponseEntity<?> getCompanyInfo(@PathVariable int companyId){
+		  
+		  try {
+			Map<String , Object> companyInfo=new HashMap<String, Object>();
+			  Company company=companyRepository.findByCompanyId(companyId);
+			  ModuleAccess moduleAccess=moduleAccessRepository.findByEmployeeIdAndCompanyId(0,companyId);
+			  User user=userRepository.getUserByUserName(company.getCompanyEmail());
+			  
+			  companyInfo.put("company", company);
+			  companyInfo.put("moduleAccess", moduleAccess);
+			  companyInfo.put("user", user);
+			  
+			  return ResponseEntity.ok(companyInfo);
+			  
+		  }catch(Exception e) {
+			  
+			   e.printStackTrace();
+	    	   
+	    	   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		  }
+		  
+		  
+	  }
+	  
+		@PutMapping("/updateCompnayInfo")
+		public ResponseEntity<?> updateCompanyInfo(@RequestBody Company company) {
+
+			try {
+				companyRepository.save(company);
+
+				return ResponseEntity.ok(company);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+			}
+		}
+		
+		
+		@PutMapping("/updateCompanyModules")
+		public ResponseEntity<?> updateCompanyModules(@RequestBody ModuleAccess moduleAccess) {
+
+			try {
+				
+				moduleAccessRepository.updateModuleAccessByCompanyId(moduleAccess.isLeadAccess(),moduleAccess.isTemplate(),moduleAccess.isEmail(),moduleAccess.getCompanyId());
+				return ResponseEntity.ok("Modules Updated Succesfully");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+			}
+		}
+		
+		
+		@PutMapping("/updateCompnayUserInfo")
+		public ResponseEntity<?> updateCompnayUserInfo(@RequestBody User user) {
+
+			try {
+				userRepository.save(user);
+
+				return ResponseEntity.ok(user);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+			}
+		}
+	  
 
 }

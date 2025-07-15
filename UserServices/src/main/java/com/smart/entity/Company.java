@@ -13,14 +13,14 @@ public class Company {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int companyId;
 	private int userId;
-	private String compnayName;
+	private String companyName;
 	private String companyEmail;
 	private String companyDescription;
-	public Company(int companyId, int userId, String compnayName, String companyEmail, String companyDescription) {
+	public Company(int companyId, int userId, String companyName, String companyEmail, String companyDescription) {
 		super();
 		this.companyId = companyId;
 		this.userId = userId;
-		this.compnayName = compnayName;
+		this.companyName = companyName;
 		this.companyEmail = companyEmail;
 		this.companyDescription = companyDescription;
 	}
@@ -41,12 +41,7 @@ public class Company {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
-	public String getCompnayName() {
-		return compnayName;
-	}
-	public void setCompnayName(String compnayName) {
-		this.compnayName = compnayName;
-	}
+	
 	public String getCompanyEmail() {
 		return companyEmail;
 	}
@@ -58,6 +53,12 @@ public class Company {
 	}
 	public void setCompanyDescription(String companyDescription) {
 		this.companyDescription = companyDescription;
+	}
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 	
 	
