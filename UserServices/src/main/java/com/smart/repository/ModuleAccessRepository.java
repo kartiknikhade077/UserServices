@@ -25,4 +25,14 @@ public interface ModuleAccessRepository extends JpaRepository<ModuleAccess, Inte
 	    @Param("email") Boolean email,
 	    @Param("companyId") int companyId
 	);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE ModuleAccess m SET m.leadAccess = :leadAccess, m.template = :template, m.email = :email WHERE m.employeeId = :employeeId")
+	int updateModuleAccessByEmployeeId(
+	    @Param("leadAccess") Boolean leadAccess,
+	    @Param("template") Boolean template,
+	    @Param("email") Boolean email,
+	    @Param("employeeId") int employeeId
+	);
 }

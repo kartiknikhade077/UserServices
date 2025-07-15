@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -145,6 +146,39 @@ public class CompanyController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("Error creating employee: " + e.getMessage());
+		}
+	}
+	
+	
+	@PutMapping("/updateEmployeeInfo")
+	public ResponseEntity<?> updateEmployee(@RequestBody Employee employee) {
+
+		try {
+			employRepository.save(employee);
+			return ResponseEntity.ok(employee);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error creating employee: " + e.getMessage());
+		}
+	   
+   }
+	
+	
+	@PutMapping("/updateEmployeeModules")
+	public ResponseEntity<?> updateCompanyModules(@RequestBody ModuleAccess moduleAccess) {
+
+		try {
+			
+			moduleAccessRepository.updateModuleAccessByEmployeeId(moduleAccess.isLeadAccess(),moduleAccess.isTemplate(),moduleAccess.isEmail(),moduleAccess.getEmployeeId());
+			return ResponseEntity.ok("Modules Updated Succesfully");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
 		}
 	}
 
