@@ -1,5 +1,8 @@
 package com.smart.dto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class CompanyDto {
 	
 	private String  companyName;
@@ -10,12 +13,13 @@ public class CompanyDto {
 	private boolean leadAccess;
 	private boolean tempalteAccess;
 	private boolean emailAccess;
+	private LocalDate expirayDate;
 
 	
 	
 	
 	public CompanyDto(String companyName, int companyId, String email, String password, String desciption,
-			boolean leadAccess, boolean tempalteAccess, boolean emailAccess) {
+			boolean leadAccess, boolean tempalteAccess, boolean emailAccess,LocalDate expirayDate) {
 		super();
 		this.companyName = companyName;
 		this.companyId = companyId;
@@ -25,6 +29,7 @@ public class CompanyDto {
 		this.leadAccess = leadAccess;
 		this.tempalteAccess = tempalteAccess;
 		this.emailAccess = emailAccess;
+		this.expirayDate=expirayDate;
 	}
 
 
@@ -97,6 +102,19 @@ public class CompanyDto {
 	public void setCompanyId(int companyId) {
 		this.companyId = companyId;
 	}
+
+
+	public LocalDate getExpirayDate() {
+		return expirayDate;
+	}
+
+
+	public void setExpirayDate(LocalDate expirayDate) {
+		this.expirayDate = expirayDate;
+	}
+
+
+	
 	
 	
 	

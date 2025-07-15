@@ -1,5 +1,8 @@
 package com.smart.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -28,6 +31,7 @@ public class User {
 	@Column(columnDefinition = "MEDIUMBLOB")
 	private byte[] images;
 	private String image;
+	private LocalDate expirayDate;
 	
 	public User(int id, String name, String email, String password, String about, String role, boolean enabled,
 			byte[] images, String image) {
@@ -119,6 +123,16 @@ public class User {
 	public void setImage(String image) {
 		this.image = image;
 	}
+
+	public LocalDate getExpirayDate() {
+		return expirayDate;
+	}
+
+	public void setExpirayDate(LocalDate expirayDate) {
+		this.expirayDate = expirayDate;
+	}
+
+	
 
 	
 	

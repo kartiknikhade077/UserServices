@@ -48,11 +48,15 @@ public class CompanyController {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	Company company;
+	User user;
 
 	@ModelAttribute
 	public void companyDetails(Principal principal) {
 
 		company = companyRepository.findByCompanyEmail(principal.getName());
+		user=userRepository.getUserByUserName(principal.getName());
+		
+		System.out.println("Expriary Date : "+ user.getExpirayDate());
 	}
 
 	@PostMapping("/createEmployee")
@@ -70,14 +74,15 @@ public class CompanyController {
 
 			employRepository.save(employee);
 
-			User user = new User();
-			user.setName(employeeDto.getName());
-			user.setEmail(employeeDto.getEmail());
-			user.setPassword(bCryptPasswordEncoder.encode(employeeDto.getPassword()));
-			user.setEnabled(false);
-			user.setRole("ROLE_EMP");
+			User employeeUser = new User();
+			employeeUser.setName(employeeDto.getName());
+			employeeUser.setEmail(employeeDto.getEmail());
+			employeeUser.setPassword(bCryptPasswordEncoder.encode(employeeDto.getPassword()));
+			employeeUser.setEnabled(false);
+			employeeUser.setRole("ROLE_EMP");
+			employeeUser.setExpirayDate(user.getExpirayDate());
 
-			userRepository.save(user);
+			userRepository.save(employeeUser);
 
 			ModuleAccess module = new ModuleAccess();
 			module.setCompanyId(company.getCompanyId());

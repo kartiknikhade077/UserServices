@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,6 +67,7 @@ public class SuperAdminController {
 		user.setEnabled(true);
 		user.setAbout(companyDto.getDesciption());
 		user.setRole("ROLE_COMPANY");
+		user.setExpirayDate(companyDto.getExpirayDate());
 		userRepository.save(user);
 
 		Company company = new Company();
