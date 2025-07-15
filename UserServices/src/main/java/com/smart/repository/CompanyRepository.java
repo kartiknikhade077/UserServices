@@ -29,7 +29,7 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
 		        m.email AS emailAccess
 		    FROM company c
 		    JOIN module_access m ON c.company_id = m.company_id
-		    WHERE c.company_email = :email
+		    WHERE c.company_email = :email and m.employee_id=0
 		""", nativeQuery = true)
 		CompanyDto findCompanyDtoByEmail(@Param("email") String email);
 	
