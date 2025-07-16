@@ -12,13 +12,15 @@ public class Departments {
 	private long departmentId;
 	private int companyId;
 	private String departmentName;
+	private String departmentEmail;
 	
 	
-	public Departments(long departmentId, int companyId, String departmentName) {
+	public Departments(long departmentId, int companyId, String departmentName,String departmentEmail) {
 		super();
 		this.departmentId = departmentId;
 		this.companyId = companyId;
-		departmentName = departmentName;
+		this.departmentName = departmentName;
+		this.departmentEmail=departmentEmail;
 	}
 	
 	
@@ -49,6 +51,17 @@ public class Departments {
 		this.departmentName = departmentName;
 	}
 
+
+	public String getDepartmentEmail() {
+		return departmentEmail;
+	}
+
+
+	public void setDepartmentEmail(String departmentEmail) {
+		this.departmentEmail = departmentEmail;
+	}
+
+	
 	
 	
 }

@@ -283,14 +283,19 @@ public class CompanyController {
 
 	}
 
-	@GetMapping("/getRoleByCompanyId")
-	public ResponseEntity<?> getRolesByCompanyId() {
+	@GetMapping("/getRoleByCompanyId/{page}/{size}")
+	public ResponseEntity<?> getRolesByCompanyId(@PathVariable int page , @PathVariable int size) {
 
 		try {
+			Pageable pageable = PageRequest.of(page, size);
+			Page<Role> rolePage = roleRepository.findByCompanyId(company.getCompanyId(), pageable);
+			Map<String, Object> response = new HashMap<>();
+			response.put("roles", rolePage.getContent());
+			response.put("currentPage", rolePage.getNumber());
+			response.put("totalItems", rolePage.getTotalElements());
+			response.put("totalPages", rolePage.getTotalPages());
 
-			List<Role> roleList = roleRepository.findByCompanyId(company.getCompanyId());
-
-			return ResponseEntity.ok(roleList);
+			return ResponseEntity.ok(response);
 
 		} catch (Exception e) {
 
