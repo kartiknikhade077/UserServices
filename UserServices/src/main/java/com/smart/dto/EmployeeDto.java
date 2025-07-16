@@ -15,6 +15,9 @@ public class EmployeeDto {
 	private String description;
 	private String department;
 	private String gender;
+	private long departmentId;
+	private long roleId;
+	private String roleName;
 	
 	//access module
 	
@@ -137,6 +140,24 @@ public class EmployeeDto {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public long getDepartmentId() {
+		return departmentId;
+	}
+	public void setDepartmentId(long departmentId) {
+		this.departmentId = departmentId;
+	}
+	public long getRoleId() {
+		return roleId;
+	}
+	public void setRoleId(long roleId) {
+		this.roleId = roleId;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 	
 	

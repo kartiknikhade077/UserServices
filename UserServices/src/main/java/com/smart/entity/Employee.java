@@ -20,6 +20,9 @@ public class Employee {
 	private String description;
 	private String department;
 	private String gender;
+	private long departmentId;
+	private long roleId;
+	private String roleName;
 	public Employee(int employeeId, int userId, String name, String email, String phone, String description,
 			String department, String gender,int companyId) {
 		super();
@@ -98,6 +101,36 @@ public class Employee {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	public long getDepartmentId() {
+		return departmentId;
+	}
+
+
+	public void setDepartmentId(long departmentId) {
+		this.departmentId = departmentId;
+	}
+
+
+	public long getRoleId() {
+		return roleId;
+	}
+
+
+	public void setRoleId(long roleId) {
+		this.roleId = roleId;
+	}
+
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
 	

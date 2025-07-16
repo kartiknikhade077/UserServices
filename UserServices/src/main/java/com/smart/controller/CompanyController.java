@@ -83,6 +83,9 @@ public class CompanyController {
 			employee.setDescription(employeeDto.getDescription());
 			employee.setUserId(company.getUserId());
 			employee.setCompanyId(company.getCompanyId());
+			employee.setDepartmentId(employeeDto.getDepartmentId());
+			employee.setRoleId(employeeDto.getRoleId());
+			employee.setRoleName(employeeDto.getRoleName());
 
 			employRepository.save(employee);
 
@@ -287,7 +290,7 @@ public class CompanyController {
 	public ResponseEntity<?> getRolesByCompanyId(@PathVariable int page , @PathVariable int size) {
 
 		try {
-			Pageable pageable = PageRequest.of(page, size);
+			Pageable pageable = PageRequest.of(page, size,Sort.by("roleId").descending());
 			Page<Role> rolePage = roleRepository.findByCompanyId(company.getCompanyId(), pageable);
 			Map<String, Object> response = new HashMap<>();
 			response.put("roles", rolePage.getContent());
