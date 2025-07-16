@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.relation.RoleResult;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,12 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smart.dto.EmployeeDto;
 import com.smart.entity.Company;
+import com.smart.entity.Departments;
 import com.smart.entity.Employee;
 import com.smart.entity.ModuleAccess;
+import com.smart.entity.Role;
 import com.smart.entity.User;
 import com.smart.repository.CompanyRepository;
+import com.smart.repository.DepartmentsRepository;
 import com.smart.repository.EmployeeRepository;
 import com.smart.repository.ModuleAccessRepository;
+import com.smart.repository.RoleRepository;
 import com.smart.repository.UserRepository;
 
 @RestController
@@ -47,7 +53,13 @@ public class CompanyController {
 	private ModuleAccessRepository moduleAccessRepository;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private DepartmentsRepository departmentsRepository;
 
+	@Autowired
+	private RoleRepository roleRepository;
+	
 	Company company;
 	User user;
 
@@ -57,7 +69,6 @@ public class CompanyController {
 		company = companyRepository.findByCompanyEmail(principal.getName());
 		user=userRepository.getUserByUserName(principal.getName());
 		
-		System.out.println("Expriary Date : "+ user.getExpirayDate());
 	}
 
 	@PostMapping("/createEmployee")
@@ -181,5 +192,153 @@ public class CompanyController {
 
 		}
 	}
+	
+	@PostMapping("/createDepartment")
+	public ResponseEntity<?> createDepartment(@RequestBody Departments departments) {
+
+		try {
+			departments.setCompanyId(company.getCompanyId());
+			departmentsRepository.save(departments);
+			return ResponseEntity.ok(departments);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+	
+	
+	@PutMapping("/updateDepartment")
+	public ResponseEntity<?> updateDepartment(@RequestBody Departments departments) {
+
+		try {
+			departments.setCompanyId(company.getCompanyId());
+			departmentsRepository.save(departments);
+			return ResponseEntity.ok(departments);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+	
+	@GetMapping("/getDepartments")
+	public ResponseEntity<?> getDepartments() {
+
+		try {
+
+			List<Departments> deparmentList=departmentsRepository.findByCompanyId(company.getCompanyId());
+			return ResponseEntity.ok(deparmentList);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+	
+	@PostMapping("/createRole")
+	public ResponseEntity<?> createRole(@RequestBody Role role) {
+
+		try {
+			role.setCompanyId(company.getCompanyId());
+			roleRepository.save(role);
+			return ResponseEntity.ok(role);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+	
+	@PutMapping("/updateRole")
+	public ResponseEntity<?> updateRole(@RequestBody Role role) {
+
+		try {
+			role.setCompanyId(company.getCompanyId());
+			roleRepository.save(role);
+			return ResponseEntity.ok(role);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+
+	@GetMapping("/getRoleByCompanyId")
+	public ResponseEntity<?> getRolesByCompanyId() {
+
+		try {
+
+			List<Role> roleList = roleRepository.findByCompanyId(company.getCompanyId());
+
+			return ResponseEntity.ok(roleList);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+	
+	@GetMapping("/getRolesByDepartmentId/{departmentId}")
+	public ResponseEntity<?> getRolesByDepartmentId(@PathVariable int departmentId) {
+
+		try {
+
+			List<Role> roleList = roleRepository.findByDepartmentId(departmentId);
+
+			return ResponseEntity.ok(roleList);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+
+	@GetMapping("/getRolesByRoleId/{roleId}")
+	public ResponseEntity<?> getRolesByRoleId(@PathVariable int roleId) {
+
+		try {
+
+			Role roleList = roleRepository.findByRoleId(roleId);
+
+			return ResponseEntity.ok(roleList);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+	
 
 }
