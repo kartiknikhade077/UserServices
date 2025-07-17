@@ -2,6 +2,7 @@ package com.smart.controller;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +30,14 @@ import com.smart.dto.EmployeeDto;
 import com.smart.entity.Company;
 import com.smart.entity.Departments;
 import com.smart.entity.Employee;
+import com.smart.entity.Leads;
 import com.smart.entity.ModuleAccess;
 import com.smart.entity.Role;
 import com.smart.entity.User;
 import com.smart.repository.CompanyRepository;
 import com.smart.repository.DepartmentsRepository;
 import com.smart.repository.EmployeeRepository;
+import com.smart.repository.LeadRepositroy;
 import com.smart.repository.ModuleAccessRepository;
 import com.smart.repository.RoleRepository;
 import com.smart.repository.UserRepository;
@@ -59,6 +62,9 @@ public class CompanyController {
 
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private LeadRepositroy leadRepositroy;
 	
 	Company company;
 	User user;
@@ -348,5 +354,70 @@ public class CompanyController {
 
 	}
 	
+	
+	//Lead APIs
+	@PostMapping("/createLead")
+	public ResponseEntity< ?> createCompany(@RequestBody Leads lead){
+		
+		try {
+			lead.setEmployeeId(0);
+			lead.setCompanyId(company.getCompanyId());
+			leadRepositroy.save(lead);
+			
+			return ResponseEntity.ok(lead);
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+	}
+	
+	
+	@GetMapping("/getLeads/{page}/{size}")
+	public ResponseEntity<?> getLeads(@PathVariable int page , @PathVariable int size,@RequestParam(defaultValue = "") String customerName) {
+
+		try {
+			Pageable pageable = PageRequest.of(page, size,Sort.by("leadId").descending());
+			Page<Leads> LeadsPage = leadRepositroy.findByCompanyIdAndCustomerNameContainingIgnoreCase(company.getCompanyId(), pageable,customerName);
+			Map<String, Object> response = new LinkedHashMap<>();
+			response.put("Leads", LeadsPage.getContent());
+			response.put("currentPage", LeadsPage.getNumber());
+			response.put("totalItems", LeadsPage.getTotalElements());
+			response.put("totalPages", LeadsPage.getTotalPages());
+
+			return ResponseEntity.ok(response);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+
+	}
+	
+	
+	@PutMapping("/updateLead")
+	public ResponseEntity< ?> updateLead(@RequestBody Leads lead){
+		
+		try {
+			lead.setEmployeeId(0);
+			lead.setCompanyId(company.getCompanyId());
+			leadRepositroy.save(lead);
+			
+			return ResponseEntity.ok(lead);
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+	}
 
 }
