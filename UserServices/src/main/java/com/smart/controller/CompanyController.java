@@ -399,7 +399,7 @@ public class CompanyController {
 		}
 
 	}
-	@PutMapping("/getLead/{leadId}")
+	@GetMapping("/getLead/{leadId}")
 	public ResponseEntity< ?> updateLead(@PathVariable long leadId){
 		
 		try {
