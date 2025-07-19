@@ -12,5 +12,7 @@ import com.smart.entity.Leads;
 public interface LeadRepositroy extends JpaRepository<Leads, Long> {
 	
 	Page<Leads> findByCompanyIdAndCustomerNameContainingIgnoreCase(int companyId ,Pageable pageable,String customerName);
+	
+	Leads findLeadByLeadId(long leadId);
 
 }

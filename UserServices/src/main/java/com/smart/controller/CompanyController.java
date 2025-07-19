@@ -399,7 +399,22 @@ public class CompanyController {
 		}
 
 	}
-	
+	@PutMapping("/getLead/{leadId}")
+	public ResponseEntity< ?> updateLead(@PathVariable long leadId){
+		
+		try {
+			Leads  lead= leadRepositroy.findLeadByLeadId(leadId);
+			
+			return ResponseEntity.ok(lead);
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+	}
 	
 	@PutMapping("/updateLead")
 	public ResponseEntity< ?> updateLead(@RequestBody Leads lead){
