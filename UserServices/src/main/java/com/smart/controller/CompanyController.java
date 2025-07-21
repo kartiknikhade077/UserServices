@@ -139,11 +139,14 @@ public class CompanyController {
 	@GetMapping("/getEmployeeList/{page}/{size}")
 	public ResponseEntity<?> getEmployeeList(@PathVariable int page ,@PathVariable int size, @RequestParam(defaultValue = "") String name) {
 		try {
+			Map<String ,Object> data=new HashMap<String , Object>();
 			 Pageable pageable = PageRequest.of(page, size, Sort.by("employeeId").descending());
 		        Page<Employee> employeePage = employRepository.findByCompanyIdAndNameContainingIgnoreCase(company.getCompanyId(), name, pageable);
 		        List<Employee> employeeList = employeePage.getContent();
-
-			return ResponseEntity.ok(employeeList);
+		        data.put("employeeList", employeeList);
+		        data.put("totalPages", employeePage.getTotalPages());
+		        data.put("currentPage", employeePage.getNumber());
+			return ResponseEntity.ok(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -239,12 +242,16 @@ public class CompanyController {
 
 	}
 	
-	@GetMapping("/getDepartments")
-	public ResponseEntity<?> getDepartments() {
+	@GetMapping("/getDepartments/{page}/{size}")
+	public ResponseEntity<?> getDepartments(@PathVariable int page ,@PathVariable int size){
 
 		try {
-
-			List<Departments> deparmentList=departmentsRepository.findByCompanyId(company.getCompanyId());
+			Pageable pageable = PageRequest.of(page, size, Sort.by("departmentId").descending());
+			Page<Departments> deparmentList=departmentsRepository.findByCompanyId(company.getCompanyId(),pageable);
+			Map<String ,Object> data=new HashMap<String,Object>();
+			data.put("deparmentList", deparmentList.getContent());
+			data.put("currentPage", deparmentList.getNumber());
+			data.put("totalPage", deparmentList.getTotalPages());
 			return ResponseEntity.ok(deparmentList);
 
 		} catch (Exception e) {

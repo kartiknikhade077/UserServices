@@ -104,14 +104,19 @@ public class SuperAdminController {
 				@RequestParam(defaultValue = "") String companyName) {
 	
 			try {
-			
+			Map<String,Object> data=new HashMap<String,Object>();
 			Pageable pageable = PageRequest.of(page, size, Sort.by("companyId").descending());
 	
 			Page<Company> companyPage = companyRepository.findByCompanyNameContainingIgnoreCase(companyName, pageable);
 	
 			List<Company> companyList = companyPage.getContent();
-	
-			return ResponseEntity.ok(companyList);
+			
+			data.put("companyList", companyList);
+			data.put("totalPages", companyPage.getTotalPages());
+			data.put("currentPage", companyPage.getNumber());
+			
+	        
+			return ResponseEntity.ok(data);
 			}catch(Exception e){
 				e.printStackTrace();
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
