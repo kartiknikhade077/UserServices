@@ -30,6 +30,7 @@ import com.smart.dto.EmployeeDto;
 import com.smart.entity.Company;
 import com.smart.entity.Departments;
 import com.smart.entity.Employee;
+import com.smart.entity.LeadStatus;
 import com.smart.entity.Leads;
 import com.smart.entity.ModuleAccess;
 import com.smart.entity.Role;
@@ -38,6 +39,7 @@ import com.smart.repository.CompanyRepository;
 import com.smart.repository.DepartmentsRepository;
 import com.smart.repository.EmployeeRepository;
 import com.smart.repository.LeadRepositroy;
+import com.smart.repository.LeadStatusRepository;
 import com.smart.repository.ModuleAccessRepository;
 import com.smart.repository.RoleRepository;
 import com.smart.repository.UserRepository;
@@ -65,6 +67,9 @@ public class CompanyController {
 	
 	@Autowired
 	private LeadRepositroy leadRepositroy;
+	
+	@Autowired
+	private LeadStatusRepository leadStatusRepository;
 	
 	Company company;
 	User user;
@@ -432,6 +437,82 @@ public class CompanyController {
 			leadRepositroy.save(lead);
 			
 			return ResponseEntity.ok(lead);
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+	}
+	
+	@PostMapping("/createLeadStatus")
+	public ResponseEntity< ?> createLeadStatus(@RequestBody LeadStatus leadStatus){
+		
+		try {
+			
+			leadStatus.setCompanyId(company.getCompanyId());
+			leadStatusRepository.save(leadStatus);
+			
+			return ResponseEntity.ok(leadStatus);
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+	}
+	
+	@GetMapping("/getLeadStatus")
+	public ResponseEntity< ?> getLeadStatus(){
+		
+		try {
+			List<LeadStatus> leadStatus=leadStatusRepository.findByCompanyId(company.getCompanyId());
+			return ResponseEntity.ok(leadStatus);
+			
+		}catch(Exception e) {
+			
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+	}
+	
+	
+	@PutMapping("/updateLeadStatus")
+	public ResponseEntity<?> updateLeadStatus(@RequestBody Map<String, LeadStatus> leadStatusMap) {
+
+		try {
+			LeadStatus leadStatusFirst = leadStatusMap.get("leadStatusFirst");
+			LeadStatus leadStatusSecond = leadStatusMap.get("leadStatusSecond");
+
+			leadStatusRepository.save(leadStatusFirst);
+			leadStatusRepository.save(leadStatusSecond);
+			return ResponseEntity.ok(leadStatusMap);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+		}
+	}
+	
+	
+	
+	@PostMapping("/deleteLeadStatus/{leadStatusId}")
+	public ResponseEntity< ?> deleteLeadStatus(@PathVariable long leadStatusId){
+		
+		try {
+			
+			leadStatusRepository.deleteById(leadStatusId);
+			
+			return ResponseEntity.ok("Deleted Succefullys");
 			
 		}catch(Exception e) {
 			
